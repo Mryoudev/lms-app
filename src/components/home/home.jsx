@@ -110,25 +110,53 @@ class Home extends React.Component {
                     pren:nStudent.pren,
                     email:nStudent.email,
                     avatar:nStudent.avatar,
+                    ispresent:nStudent.isPresence
                 }
                 axios.post("student.json",data_student).then((response)=>{
 
                     let id_new_student = response.data.name;
+                    
+                    //chercher l'etudiant qui l'id == 0 sur la liste
+                    let newListStudent = this.state.list_student_data;
+                    newListStudent.forEach(s=>{
+                        if(s.id==0){
+                            s.id = id_new_student
+                        }
+                        console.log(s)
+                    })
 
-                    const myNewStudent = {
-                        nom: nStudent.nom,
-                        pren: nStudent.pren,
-                        email: nStudent.email,
-                        avatar: nStudent.avatar,
-                        id: id_new_student
-                    }
-
-                    console.log(myNewStudent)
                 })
 
         }
 
    };
+
+   // récuperer la liste des eutdiant onload  depuis firebase
+   componentDidMount(){
+       axios.get("student.json").then((response)=>{
+
+        //extraire toutes les clés de l'objet data
+        let keys = Object.keys(response.data)
+
+        //parcourir les keys
+        let listEtudiant = keys.map(k=>{
+            let ns = new StudentModel(
+                k,
+                response.data[k].nom,
+                response.data[k].pren,
+                response.data[k].email,
+                response.data[k].avatar,
+                response.data[k].isPresence,
+            );        
+            return ns;
+        });
+
+        //ajouter la liste 
+        this.setState({list_student_data:listEtudiant})
+
+        console.log(listEtudiant);
+       })
+   } 
 }
 
        
