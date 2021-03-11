@@ -3,6 +3,8 @@ import "./home.css"
 import ListStudent from '../student/list-student'
 import NewStudent from '../student/new-student'
 import StudentModel from './../../models/student';
+import axios from '../../utils/axios';
+
 
 
 
@@ -71,7 +73,6 @@ class Home extends React.Component {
         } else {
             // creer un objet de type student
             let nStudent = new StudentModel(
-                this.state.list_student_data.length +1,
                 this.state.nom,
                 this.state.pren,
                 this.state.email,
@@ -84,7 +85,7 @@ class Home extends React.Component {
                     nom:"",
                     pren:"",
                     email:"",
-                    avatar:"",
+                    avatar:""
                 })
 
                 // Vider les inputs de formulaire
@@ -99,6 +100,7 @@ class Home extends React.Component {
                     }
                 )
                 console.log(this.state.list_student_datanStudent);
+                axios.post("student.json",nStudent)
         }
 
    };

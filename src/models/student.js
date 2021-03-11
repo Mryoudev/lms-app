@@ -1,7 +1,6 @@
 // définir le type student
 export default class StudentModel{
-    constructor(id,nom,pren,email,avatar,isPresence){
-        this.id=id;
+    constructor(nom,pren,email,avatar,isPresence){
         this.nom=nom;
         this.pren=pren;
         this.email=email;
