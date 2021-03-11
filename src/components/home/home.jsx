@@ -73,6 +73,7 @@ class Home extends React.Component {
         } else {
             // creer un objet de type student
             let nStudent = new StudentModel(
+                0,
                 this.state.nom,
                 this.state.pren,
                 this.state.email,
@@ -93,14 +94,38 @@ class Home extends React.Component {
                
                 // ajouter student aà la liste
                 let newStudentList =  this.state.list_student_data;
+
+
                 newStudentList.push(nStudent);
                 this.setState(
                     {
                     list_student_data:newStudentList
                     }
-                )
-                console.log(this.state.list_student_datanStudent);
-                axios.post("student.json",nStudent)
+                );
+                
+                // ajouter l'etudiant à la partie serveur (firebas) en utilisant axios
+
+                const data_student = {
+                    nom:nStudent.nom,
+                    pren:nStudent.pren,
+                    email:nStudent.email,
+                    avatar:nStudent.avatar,
+                }
+                axios.post("student.json",data_student).then((response)=>{
+
+                    let id_new_student = response.data.name;
+
+                    const myNewStudent = {
+                        nom: nStudent.nom,
+                        pren: nStudent.pren,
+                        email: nStudent.email,
+                        avatar: nStudent.avatar,
+                        id: id_new_student
+                    }
+
+                    console.log(myNewStudent)
+                })
+
         }
 
    };
