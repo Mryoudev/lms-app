@@ -32,16 +32,18 @@ class Home extends React.Component {
                 🧑‍🎓 LMS-APP : <span className="text-warning">Home</span> 🏠
             </h1>
             <div className="container-fluid d-flex p-4">
+
                 {/* new student */}
                 <NewStudent 
-               
                 handleChange = {this.handleChange}
                 handleSubmit = {this.addStudent}
-                
                 />
 
                 {/* list of students */}
-               <ListStudent dataList={this.state.list_student_data}/>
+               <ListStudent 
+               dataList={this.state.list_student_data}
+               handleDeleteStudent={this.deleteStudent}
+               />
             </div>
         </>
     );
@@ -119,16 +121,12 @@ class Home extends React.Component {
                     //chercher l'etudiant qui l'id == 0 sur la liste
                     let newListStudent = this.state.list_student_data;
                     newListStudent.forEach(s=>{
-                        if(s.id==0){
-                            s.id = id_new_student
-                        }
-                        console.log(s)
-                    })
+                        if(s.id==0){ s.id = id_new_student;}
+                    });
 
-                })
-
+                    this.setState({list_student_data:newListStudent})
+                });
         }
-
    };
 
    // récuperer la liste des eutdiant onload  depuis firebase
@@ -157,6 +155,19 @@ class Home extends React.Component {
         console.log(listEtudiant);
        })
    } 
+
+   //------- handle delete
+   deleteStudent = (idStudent)=>{
+
+    //supprimer un etudiant depuis firebase
+
+       axios.delete("student/"+idStudent+".json").then((response)=>{
+
+            let newList = this.state.list_student_data;
+            newList= newList.filter(s=>s.id != idStudent);
+            this.setState({list_student_data:newList})
+       })
+   }
 }
 
        
