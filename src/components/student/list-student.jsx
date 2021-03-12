@@ -6,7 +6,9 @@ export default function ListStudent(props) {
     
     return (
         <div className="h-75 col-8 border p-5 overflow-scroll ">
-            <input type="text"
+            <input 
+                onKeyUp={props.handleFilterFromHome}
+                type="text"
                 className="w-50 form-control mx-auto"
                 placeholder="Filter students by firstname or lastname" />
 

@@ -22,6 +22,7 @@ class Home extends React.Component {
             avatar:"",
             updateStudent_id:-1,
             list_student_data:[],
+            backupList:[],
             textBtnState:"Add Student",
             iconBtnState:"fas fa-plus-circle",
             action:"ADD"
@@ -57,10 +58,35 @@ class Home extends React.Component {
                dataList={this.state.list_student_data}
                handleDeleteFromHome={this.deleteStudent}
                handleEditFromHome={this.editStudent}
+               handleFilterFromHome={this.filterStudentsByName}
                />
             </div>
         </>
     );
+   }
+
+   //------filter student by name
+   filterStudentsByName = (event)=>{
+
+    // changer le format en minuscule
+    let query = event.target.value.toLowerCase();
+
+    
+        //chnager la liste
+        if(query=="")
+        {
+            this.setState({list_student_data:this.state.backupList})
+        }
+        else{
+            let newList = this.state.list_student_data.filter((s)=>
+            s.nom.toLowerCase().includes(query) ||
+            s.pren.toLowerCase().includes(query)
+            );
+
+        
+            this.setState({list_student_data:newList})
+        }
+       console.log(event.target.value);
    }
 
 
@@ -164,7 +190,10 @@ class Home extends React.Component {
         });
 
         //ajouter la liste 
-        this.setState({list_student_data:listEtudiant})
+        this.setState({list_student_data:listEtudiant});
+
+        //ajouter un backup
+        this.setState({backupList:listEtudiant});
 
             }
        })
