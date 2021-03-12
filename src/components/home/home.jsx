@@ -204,7 +204,7 @@ class Home extends React.Component {
     let choice = window.confirm("Are you sure ?");
     if (choice == true) {
       //supprimer un etudiant depuis firebase
-      axios.delete("students/" + idStudent + ".json").then(() => {
+      axios.delete("student/" + idStudent + ".json").then(() => {
         let newList = this.state.list_student_data.filter(
           (s) => s.id != idStudent
         );
