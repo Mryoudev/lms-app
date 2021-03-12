@@ -132,9 +132,9 @@ class Home extends React.Component {
    // récuperer la liste des eutdiant onload  depuis firebase
    componentDidMount(){
        axios.get("student.json").then((response)=>{
-
-        //extraire toutes les clés de l'objet data
-        let keys = Object.keys(response.data)
+            if (response.data != null){
+                //extraire toutes les clés de l'objet data
+        let keys = Object.keys(response.data);
 
         //parcourir les keys
         let listEtudiant = keys.map(k=>{
@@ -152,22 +152,23 @@ class Home extends React.Component {
         //ajouter la liste 
         this.setState({list_student_data:listEtudiant})
 
-        console.log(listEtudiant);
+            }
        })
    } 
 
    //------- handle delete
-   deleteStudent = (idStudent)=>{
-
-    //supprimer un etudiant depuis firebase
-
-       axios.delete("student/"+idStudent+".json").then((response)=>{
-
-            let newList = this.state.list_student_data;
-            newList= newList.filter(s=>s.id != idStudent);
-            this.setState({list_student_data:newList})
-       })
-   }
+   deleteStudent = (idStudent) => {
+    let choice = window.confirm("Are you sure ?");
+    if (choice == true) {
+      //supprimer un etudiant depuis firebase
+      axios.delete("students/" + idStudent + ".json").then(() => {
+        let newList = this.state.list_student_data.filter(
+          (s) => s.id != idStudent
+        );
+        this.setState({ list_student_data: newList });
+      });
+    }
+};
 }
 
        
