@@ -209,6 +209,9 @@ class Home extends React.Component {
           (s) => s.id != idStudent
         );
         this.setState({ list_student_data: newList });
+
+        // changer le backup aussi
+        this.setState({ backupList: newList });
       });
     }
 };
@@ -266,6 +269,9 @@ class Home extends React.Component {
 
             //modifier la liste du state
             this.setState({list_student_data:newList})
+
+            //modifier la liste backup aussi
+            this.setState({backupList:newList})
 
             //vider le formulaire 
             event.target.reset();
