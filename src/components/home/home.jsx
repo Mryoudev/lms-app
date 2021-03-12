@@ -1,7 +1,7 @@
 import React from 'react'
 import "./home.css"
 import ListStudent from '../student/list-student'
-import NewStudent from '../student/new-student'
+import FormStudent from '../student/new-student'
 import StudentModel from './../../models/student';
 import axios from '../../utils/axios';
 
@@ -23,7 +23,8 @@ class Home extends React.Component {
             updateStudent_id:-1,
             list_student_data:[],
             textBtnState:"Add Student",
-            iconBtnState:"fas fa-plus-circle"
+            iconBtnState:"fas fa-plus-circle",
+            action:"ADD"
         };
         console.log(this.state);
     }
@@ -37,15 +38,18 @@ class Home extends React.Component {
             <div className="container-fluid d-flex p-4">
 
                 {/* new student */}
-                <NewStudent 
+                <FormStudent 
                 textBtn={this.state.textBtnState}
-                handleChange = {this.handleChange}
-                handleSubmit = {this.addStudent}
                 iconBtn={this.state.iconBtnState}
                 avatar={this.state.avatar}
                 nom={this.state.nom}
                 pren={this.state.pren}
                 email={this.state.email}
+                action={this.state.action}
+
+                handleChange = {this.handleChange}
+                handleAddSubmit = {this.addStudent}
+                handleEditSubmit = {this.submitEditStudent}
                 />
 
                 {/* list of students */}
@@ -180,7 +184,7 @@ class Home extends React.Component {
     }
 };
 
-
+    //---editStudent lorsque qu'on click sur btn update icon 
     editStudent = (updateStudent) => {
 
         // change le text du button newStudent
@@ -197,7 +201,59 @@ class Home extends React.Component {
             avatar:updateStudent.avatar,
             updateStudent_id:updateStudent.id
         })
+
+        //changer l'action du state
+        this.setState({action:"EDIT"})
+
         console.log(updateStudent)
+    }
+
+    //---submitEditStudent la fonction qui va changer l'etudiant depuis firebase
+    submitEditStudent=(event)=>{
+        // pour ne pas acctualiser la page
+        event.preventDefault();
+
+        // data a envoyer vers firebase
+        const student_data={
+            nom:this.state.nom,
+            pren:this.state.pren,
+            email:this.state.email,
+            avatar:this.state.avatar,
+        }
+        // appel à la fonction put de axios
+        axios.put("student/"+this.state.updateStudent_id+".json",student_data).then((response)=>{
+            console.log(response);
+
+            //changer l'etudiant dans la liste
+            let newList = this.state.list_student_data;
+            newList.forEach((s)=>{
+                if(s.id==this.state.updateStudent_id){
+                    s.nom = response.data.nom;
+                    s.pren = response.data.pren;
+                    s.email = response.data.email;
+                    s.avatar = response.data.avatar;
+                }
+            })
+
+            //modifier la liste du state
+            this.setState({list_student_data:newList})
+
+            //vider le formulaire 
+            event.target.reset();
+
+            //vider les valeurs state
+            this.setState({
+                nom:"",
+                pren:"",
+                email:"",
+                avatar:"",
+                updateStudent_id:-1,
+                textBtnState:"Add Student",
+                iconBtnState:"fas fa-plus-circle",
+                action:"ADD",
+            })
+
+        })
     }
 }
 
