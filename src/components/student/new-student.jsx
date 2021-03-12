@@ -48,7 +48,7 @@ export default function NewStudent(props) {
                         </div>
                         <div className="text-center">
                             <button type="submit" className="btn btn-warning">
-                                Add Student <i className="fas fa-plus-circle" />
+                                <i className={props.iconBtn} />{props.textBtn}
                             </button>
                         </div>
                     </form>

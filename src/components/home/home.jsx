@@ -21,6 +21,8 @@ class Home extends React.Component {
             email:"",
             avatar:"",
             list_student_data:[],
+            textBtnState:"Add Student",
+            iconBtnState:"fas fa-plus-circle"
         };
         console.log(this.state);
     }
@@ -35,8 +37,10 @@ class Home extends React.Component {
 
                 {/* new student */}
                 <NewStudent 
+                textBtn={this.state.textBtnState}
                 handleChange = {this.handleChange}
                 handleSubmit = {this.addStudent}
+                iconBtn={this.state.iconBtnState}
                 avatar={this.state.avatar}
                 />
 
@@ -44,6 +48,7 @@ class Home extends React.Component {
                <ListStudent 
                dataList={this.state.list_student_data}
                handleDeleteFromHome={this.deleteStudent}
+               handleEditFromHome={this.editStudent}
                />
             </div>
         </>
@@ -170,6 +175,17 @@ class Home extends React.Component {
       });
     }
 };
+
+
+    editStudent = (UpdateStudent) => {
+
+        // change le text du button newStudent
+        this.setState({textBtnState:"Edit Student"})
+
+        //chnager l'icon du button newStudent
+        this.setState({iconBtnState:"fas fa-edit"})
+        console.log(UpdateStudent)
+    }
 }
 
        
