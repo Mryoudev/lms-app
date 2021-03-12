@@ -37,6 +37,7 @@ class Home extends React.Component {
                 <NewStudent 
                 handleChange = {this.handleChange}
                 handleSubmit = {this.addStudent}
+                avatar={this.state.avatar}
                 />
 
                 {/* list of students */}
