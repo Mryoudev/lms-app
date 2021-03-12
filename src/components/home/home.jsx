@@ -42,7 +42,7 @@ class Home extends React.Component {
                 {/* list of students */}
                <ListStudent 
                dataList={this.state.list_student_data}
-               handleDeleteStudent={this.deleteStudent}
+               handleDeleteFromHome={this.deleteStudent}
                />
             </div>
         </>
