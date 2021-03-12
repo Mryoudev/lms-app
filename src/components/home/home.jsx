@@ -20,6 +20,7 @@ class Home extends React.Component {
             pren:"",
             email:"",
             avatar:"",
+            updateStudent_id:-1,
             list_student_data:[],
             textBtnState:"Add Student",
             iconBtnState:"fas fa-plus-circle"
@@ -42,6 +43,9 @@ class Home extends React.Component {
                 handleSubmit = {this.addStudent}
                 iconBtn={this.state.iconBtnState}
                 avatar={this.state.avatar}
+                nom={this.state.nom}
+                pren={this.state.pren}
+                email={this.state.email}
                 />
 
                 {/* list of students */}
@@ -177,14 +181,23 @@ class Home extends React.Component {
 };
 
 
-    editStudent = (UpdateStudent) => {
+    editStudent = (updateStudent) => {
 
         // change le text du button newStudent
         this.setState({textBtnState:"Edit Student"})
 
         //chnager l'icon du button newStudent
         this.setState({iconBtnState:"fas fa-edit"})
-        console.log(UpdateStudent)
+
+        //ajouter les information du state
+        this.setState({
+            nom:updateStudent.nom,
+            pren:updateStudent.pren,
+            email:updateStudent.email,
+            avatar:updateStudent.avatar,
+            updateStudent_id:updateStudent.id
+        })
+        console.log(updateStudent)
     }
 }
 
