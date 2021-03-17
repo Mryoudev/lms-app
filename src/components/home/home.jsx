@@ -4,6 +4,10 @@ import ListStudent from '../student/list-student'
 import FormStudent from '../student/new-student'
 import StudentModel from './../../models/student';
 import axios from '../../utils/axios';
+import $ from 'jquery';
+import Popper from 'popper.js';
+import 'bootstrap/dist/js/bootstrap.bundle.min';
+import Modalshared from '../../models/modal-shared';
 
 
 
@@ -16,6 +20,8 @@ class Home extends React.Component {
         super();
         // data
         this.state = {
+            moreInfo:{},
+            isPresence:true,
             nom:"",
             pren:"",
             email:"",
@@ -25,7 +31,8 @@ class Home extends React.Component {
             backupList:[],
             textBtnState:"Add Student",
             iconBtnState:"fas fa-plus-circle",
-            action:"ADD"
+            action:"ADD",
+            cancelEditState:false,
         };
         console.log(this.state);
     }
@@ -51,19 +58,91 @@ class Home extends React.Component {
                 handleChange = {this.handleChange}
                 handleAddSubmit = {this.addStudent}
                 handleEditSubmit = {this.submitEditStudent}
+
+                cancelEdit={this.state.cancelEditState}
+                handle_cancelEditStudent_FromHome={this.cancelEditStudent}
                 />
 
                 {/* list of students */}
                <ListStudent 
-               dataList={this.state.list_student_data}
-               handleDeleteFromHome={this.deleteStudent}
-               handleEditFromHome={this.editStudent}
-               handleFilterFromHome={this.filterStudentsByName}
+                        dataList={this.state.list_student_data}
+                        handleDeleteFromHome={this.deleteStudent}
+                        handleEditFromHome={this.editStudent}
+                        handleFilterFromHome={this.filterStudentsByName}
+                        handle_MoreInfo_FromHome = {this.moreInfo}
                />
             </div>
+            {/* Modal */}
+            <Modalshared
+                data={this.state.moreInfo}
+                handleSetPresence={this.handleSetPresence}
+            />
+   
+
         </>
     );
    }
+
+   //------handleSetPresence
+   handleSetPresence=()=>{
+       // changer la liste coté client
+       let newList = this.state.list_student_data;
+       newList.forEach(s=>{
+           if(s.id==this.state.moreInfo.id){
+               s.isPresence =! s.isPresence
+           }
+       })
+       //--changer la liste list_student_data
+       this.setState({list_student_data:newList})
+
+       //--changer la liste backup
+       this.setState({backupForFilterList:newList})
+
+       //--appliquer le changement sur moreInfo
+       let data_student={
+           nom:this.state.moreInfo.nom,
+           pren:this.state.moreInfo.pren,
+           email:this.state.moreInfo.email,
+           avatar:this.state.moreInfo.avatar,
+           isPresence:this.state.moreInfo.isPresence,
+       }
+
+       // changer cote serveur
+       axios.put("student/"+this.state.moreInfo.id+".json".data_student);
+   }
+
+   cancelEditStudent = () => {
+
+    //vider les variables state
+    this.setState({
+        nom:"",
+        pren:"",
+        email:"",
+        avatar:"",
+        updateStudent_id: -1,
+        textBtnState:"Add Student",
+        iconBtnState:"fas fa-plus-circle",
+        action:"ADD",
+        cancelEditState:false
+    });
+   }
+
+   //--- handle more info
+   moreInfo = (studentInfos)=>{
+
+    // copier vers state
+    this.setState({
+        moreInfo:{...studentInfos},
+        // nom:studentInfos.nom,
+        // pren:studentInfos.pren,
+        // email:studentInfos.email,
+        // avatar:studentInfos.avatar,
+        // updateStudent_id:studentInfos.id,
+        // isPresence:studentInfos.isPresence,
+    })
+       console.log(studentInfos)
+   }
+
 
    //------filter student by name
    filterStudentsByName = (event)=>{
@@ -120,7 +199,7 @@ class Home extends React.Component {
                 this.state.pren,
                 this.state.email,
                 this.state.avatar,
-                false
+                true //---supposant que tout le monde est present
                 );
 
                 //Vider les states
@@ -152,7 +231,7 @@ class Home extends React.Component {
                     pren:nStudent.pren,
                     email:nStudent.email,
                     avatar:nStudent.avatar,
-                    ispresent:nStudent.isPresence
+                    isPresence:nStudent.isPresence
                 }
                 axios.post("student.json",data_student).then((response)=>{
 
@@ -185,7 +264,7 @@ class Home extends React.Component {
                 response.data[k].email,
                 response.data[k].avatar,
                 response.data[k].isPresence,
-            );        
+            );
             return ns;
         });
 
@@ -231,11 +310,15 @@ class Home extends React.Component {
             pren:updateStudent.pren,
             email:updateStudent.email,
             avatar:updateStudent.avatar,
-            updateStudent_id:updateStudent.id
+            updateStudent_id:updateStudent.id,
+            isPresence:updateStudent.isPresence,
         })
 
         //changer l'action du state
         this.setState({action:"EDIT"})
+
+        // afficher cancel edit btn
+        this.setState({cancelEditState:true})
 
         console.log(updateStudent)
     }
@@ -251,6 +334,7 @@ class Home extends React.Component {
             pren:this.state.pren,
             email:this.state.email,
             avatar:this.state.avatar,
+            isPresence:this.state.isPresence
         }
         // appel à la fonction put de axios
         axios.put("student/"+this.state.updateStudent_id+".json",student_data).then((response)=>{

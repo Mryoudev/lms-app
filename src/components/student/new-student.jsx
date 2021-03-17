@@ -3,6 +3,13 @@ import React from 'react'
 export default function NewStudent(props) {
     return (
         <div className="col-4 border p-5">
+                    <button 
+                        style={{position:"absolute", right:"10px", top:"10px"}} 
+                        className={props.cancelEdit == true ? "btn.btn-danger": "d-none"}
+                        onClick={props.handle_cancelEditStudent_FromHome}>
+                        <i class="fas fa-user-edit text-info"></i> 
+                    </button>
+
                     <div className="avatar border mx-auto mt-5 " 
                         style={{
                             background:`url(${
